@@ -1,1 +1,2 @@
 * * * * * echo "Hello world" >> /var/log/php/cron.log
+* * * * * echo "Hello world 2" >> /var/log/php/cron.log

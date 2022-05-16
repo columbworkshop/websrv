@@ -1,0 +1,6 @@
+# Exclude all files from being added to the repository
+*
+# Except itself
+!.gitignore
+!default.conf
+!ssl-options.conf

@@ -1,0 +1,54 @@
+version: '3.3'
+services:
+    nginx:
+      image: nginx:latest
+      container_name: nginx
+      restart: unless-stopped
+      depends_on:
+        - php
+        - mysql
+      ports:
+        - "80:80"
+        - "443:443"
+      volumes:
+        - ./www:/var/www/html
+        - ./config/nginx:/etc/nginx/conf.d
+        - ./logs/nginx:/var/log/nginx
+        - ./ssl:/etc/nginx/ssl
+        - /etc/localtime:/etc/localtime:ro
+      networks:
+        - network01
+
+    php:
+      build: ./php
+      container_name: php
+      restart: unless-stopped
+      volumes:
+        - ./www:/var/www/html
+        - /etc/localtime:/etc/localtime:ro
+        - ./logs/php:/var/log/php
+#        - ./config/php-fpm/cronjobs:/etc/cron.d/cronjobs
+#        - ./config/php-fpm/php-fpm.conf:/usr/local/etc/php-fpm.conf
+#        - ./config/php-fpm/php.ini:/usr/local/etc/php/php.ini
+      networks:
+        - network01
+
+    mysql:
+      image: mysql:latest
+      container_name: mysql
+      restart: unless-stopped
+      volumes:
+        - ./.data/db:/var/lib/mysql
+        - ./logs/mysql:/var/log/mysql
+        - ./config/mysql:/etc/mysql
+      env_file: 
+        - .env
+      entrypoint: ""
+      command: bash -c "chown -R mysql:mysql /var/log/mysql && exec /entrypoint.sh mysqld"
+      networks:
+        - network01
+
+# networks
+networks:
+  network01:
+    driver: bridge

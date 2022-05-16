@@ -175,3 +175,18 @@ Make full dump of database for running container `mysql`
 ```sh
 docker exec mysql /usr/bin/mysqldump -u root --password=root_passwordo --all-databases | gzip > mysqldumps/mysqldump-$(date +%Y%m%d-%H:%M:%S).gz
 ```
+
+### PHP Cron jobs
+To make cron job for php you can edit `php/cronjobs` file and add one job in one string, for example:
+```sh
+* * * * * echo "Hello world" >> /var/log/php/cron.log
+```
+After file was updated - restart and rebuild php container (it'll be partial rebuild and it's very fast)
+```sh
+docker-compose stop php
+docker-compose up -d --build php
+```
+
+
+
+

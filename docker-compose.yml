@@ -10,6 +10,7 @@ services:
       ports:
         - "80:80"
         - "443:443"
+        - "6003:6003"
       volumes:
         - ./www:/var/www/html
         - ./config/nginx:/etc/nginx/conf.d

@@ -24,7 +24,7 @@ RUN chmod 0644 /etc/cron.d/cronjobs
 RUN crontab /etc/cron.d/cronjobs
 
 # Run cron on container startup
-RUN cron
+#RUN cron
 
 
 

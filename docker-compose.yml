@@ -27,9 +27,7 @@ services:
         - ./www:/var/www/html
         - /etc/localtime:/etc/localtime:ro
         - ./logs/php:/var/log/php
-#        - ./config/php-fpm/cronjobs:/etc/cron.d/cronjobs
-#        - ./config/php-fpm/php-fpm.conf:/usr/local/etc/php-fpm.conf
-#        - ./config/php-fpm/php.ini:/usr/local/etc/php/php.ini
+      command: bash -c "cron && exec docker-php-entrypoint php-fpm"
       networks:
         - network01
 

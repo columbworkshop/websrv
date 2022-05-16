@@ -27,6 +27,7 @@ services:
         - ./www:/var/www/html
         - /etc/localtime:/etc/localtime:ro
         - ./logs/php:/var/log/php
+      entrypoint: ""
       command: bash -c "cron && exec docker-php-entrypoint php-fpm"
       networks:
         - network01

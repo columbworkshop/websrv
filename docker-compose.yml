@@ -17,6 +17,7 @@ services:
         - ./logs/nginx:/var/log/nginx
         - ./ssl:/etc/nginx/ssl
         - /etc/localtime:/etc/localtime:ro
+        - ./certbot/www/html:/var/www/html/certbot
       networks:
         - network01
 
@@ -47,6 +48,12 @@ services:
       command: bash -c "chown -R mysql:mysql /var/log/mysql && exec /entrypoint.sh mysqld"
       networks:
         - network01
+
+    certbot:
+      image: certbot/certbot:latest
+      volumes:
+        - ./certbot/www/html:/var/www/certbot:rw
+        - ./certbot/conf:/etc/letsencrypt:rw
 
 # networks
 networks:

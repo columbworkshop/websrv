@@ -187,6 +187,16 @@ docker-compose stop php
 docker-compose up -d --build php
 ```
 
+### Certbot 
+To check if you can get SSL cert for domain `example.org` use the command with `--dry-run` option:
+```sh
+docker compose run --rm  certbot certonly --webroot --webroot-path /var/www/certbot/ --dry-run -d example.org
+```
 
+To get real SSL cert for domain `example.org` use the command without `--dry-run` option:
+```sh
+docker compose run --rm  certbot certonly --webroot --webroot-path /var/www/certbot/ -d example.org
+```
 
-
+All certificates will be saved in `certbot/conf` directory and can be copied to `ssl` folder.
+`ssl` folder has linked as volume to nginx container 

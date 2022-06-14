@@ -29,6 +29,8 @@ services:
         - ./www:/var/www/html
         - /etc/localtime:/etc/localtime:ro
         - ./logs/php:/var/log/php
+      expose:
+        - "6003"
       entrypoint: ""
       command: bash -c "cron && exec docker-php-entrypoint php-fpm"
       networks:
@@ -54,6 +56,15 @@ services:
       volumes:
         - ./certbot/www/html:/var/www/certbot:rw
         - ./certbot/conf:/etc/letsencrypt:rw
+
+
+    redis:
+      image: 'bitnami/redis:latest'
+      container_name: redis
+      environment:
+        - ALLOW_EMPTY_PASSWORD=yes
+      networks:
+        - network01
 
 # networks
 networks:

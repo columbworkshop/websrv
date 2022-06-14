@@ -1,7 +1,7 @@
 <?php
 # Fill our vars and run on cli
 # $ php -f db-connect-test.php
-
+error_reporting(0);
 //$dbname = 'name';
 //$dbuser = 'user';
 //$dbpass = 'pass';

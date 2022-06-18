@@ -42,6 +42,7 @@ Creating network "websrv_network01" with driver "bridge"
 Creating php   ... done
 Creating mysql ... done
 Creating nginx ... done
+Creating redis ... done
 ```
 
 ### Checkup
@@ -49,11 +50,14 @@ Check containers state:
 ```sh
 $ docker-compose ps
 
-     Name                  Command             State                     Ports
--------------------------------------------------------------------------------------------------
+Name               Command               State                                                    Ports
+-------------------------------------------------------------------------------------------------------------------------------
 mysql   bash -c chown -R mysql:mys ...   Up      3306/tcp, 33060/tcp
-nginx   /docker-entrypoint.sh ngin ...   Up      0.0.0.0:443->443/tcp, 0.0.0.0:80->80/tcp
-php     docker-php-entrypoint php-fpm    Up      9000/tcp
+nginx   /docker-entrypoint.sh ngin ...   Up      0.0.0.0:443->443/tcp,:::443->443/tcp, 0.0.0.0:6003->6003/tcp,:::6003->6003/tcp,
+                                                 0.0.0.0:80->80/tcp,:::80->80/tcp
+php     bash -c cron && exec docke ...   Up      6003/tcp, 9000/tcp
+redis   /opt/bitnami/scripts/redis ...   Up      6379/tcp
+
 ```
 
 Check if webserver running and shows phpinfo
@@ -106,8 +110,8 @@ List the contents
 │   └── mysqldump-XXXX.gz
 │
 ├── ssl
-│   ├── certificate.crt 
-│   └── private.key
+│   ├── fullchain.pem 
+│   └── privkey.pem
 │
 ├── .data (_mysql persistent data_)
 ├── .env
@@ -122,7 +126,31 @@ Adding new site (for example `new-site`)
 2. add new nginx configuration file for site in local directory `config/nginx` with root directive in config file `root /var/www/html/new-site/public;`
 3. restart nginx container - `docker-compose restart nginx`
 
-
+### Network connection to services
+All network connections can be established by names of services.
+#### Connection to Mysql:
+```
+<?php
+$link = mysql_connect('mysql', '_USERNAME_', '_PASSWORD_');
+if (!$link) {
+    die('Could not connect: ' . mysql_error());
+}
+echo 'Connected successfully';
+mysql_close($link);
+?>
+```
+#### Connection to Redis 
+```
+<?php 
+   //Connecting to Redis server 
+   $redis = new Redis(); 
+   $redis->connect('redis', 6379); 
+   echo "Connection to server sucessfully"; 
+   //check whether server is running or not 
+   echo "Server is running: ".$redis->ping(); 
+?>
+```
+ 
 ### Basic operations
 List the containers
 ```sh
@@ -131,8 +159,10 @@ $ docker-compose ps
      Name                  Command             State                     Ports
 -------------------------------------------------------------------------------------------------
 mysql   bash -c chown -R mysql:mys ...   Up      3306/tcp, 33060/tcp
-nginx   /docker-entrypoint.sh ngin ...   Up      0.0.0.0:443->443/tcp, 0.0.0.0:80->80/tcp
-php     docker-php-entrypoint php-fpm    Up      9000/tcp
+nginx   /docker-entrypoint.sh ngin ...   Up      0.0.0.0:443->443/tcp,:::443->443/tcp, 0.0.0.0:6003->6003/tcp,:::6003->6003/tcp,
+                                                 0.0.0.0:80->80/tcp,:::80->80/tcp
+php     bash -c cron && exec docke ...   Up      6003/tcp, 9000/tcp
+redis   /opt/bitnami/scripts/redis ...   Up      6379/tcp
 ```
 
 Stop containers docker compose

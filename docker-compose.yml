@@ -29,6 +29,7 @@ services:
         - ./www:/var/www/html
         - /etc/localtime:/etc/localtime:ro
         - ./logs/php:/var/log/php
+        - ./config/php-fpm/usersetting.ini:/usr/local/etc/php/conf.d/usersetting.ini
       expose:
         - "6003"
       entrypoint: ""
